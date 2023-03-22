@@ -11,7 +11,7 @@ password = sys.argv[2]
 print("Logging in with: ", username)
 
 
-response = requests.post("https://apis.marketnews.com/api/auth/client/token", 
+response = requests.post("https://apis.marketnews.com/api/auth/client/token",
     json={
         "username":username,
         "password":password
@@ -25,8 +25,32 @@ print("Auth response: ", response.status_code)
 token = response.json()['access_token']
 
 
+# Fetch Scheduled Instant Answers From REST API
+
+
+response = requests.get("https://api.alphaflash.com/api/select/calendar/events?includeInstantAnswers=true&size=100", 
+    headers={
+        "Authorization": "Bearer " + token
+    },
+    timeout= 30
+)
+
+events = response.json()['content']
+
+for event in events:
+    for ia in event['instantAnswers']:
+        print("\ndisplay:   " + ia['display'] )
+        print("state:     " + ia['state'] )
+        print("date:      " + event['date'] )
+        for question in ia['questions']:
+            print(question)
+        print("-----\n" )
+
+
+# Connect to Websocket and wait for data
+
 ws = websocket.WebSocket()
-ws.connect("ws://127.0.0.1:61612/wss")
+ws.connect("wss://select.alphaflash.com/wss")
 
 
 ws.send(Frame.marshall("CONNECT",{ 'passcode':token, 'heart-beat':'0,30000'},""))
