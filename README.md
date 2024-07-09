@@ -9,6 +9,8 @@ This uses Python 3.
 
 ## News API Sample [example.py](example.py)
 
+This connects to our news article API and receives news articles via websocket push. 
+
 ### Run
 
     #run with
@@ -21,6 +23,17 @@ This uses Python 3.
 
 A main entry point is in [example.py](example.py).
 
+## Data API Sample [example_data.py](example_data.py)
+
+This connects to our data article API and receives realtime data via websocket push. 
+
+### Run
+
+    #run with
+    python example_data.py <user> <pass>
+    
+    #example
+    python example_data.py my_user XXXXXXX
 
 ## Instant Answers API Sample [example_instant_answers.py](example_instant_answers.py)
 

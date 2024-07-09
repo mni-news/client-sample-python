@@ -28,7 +28,7 @@ token = response.json()['access_token']
 # Fetch Scheduled Instant Answers From REST API
 
 
-response = requests.get("https://apis.marketnews.com/api/select/calendar/events?includeInstantAnswers=true&size=100", 
+response = requests.get("https://apis.marketnews.com/api/select/calendar/events?size=100", 
     headers={
         "Authorization": "Bearer " + token
     },
@@ -37,14 +37,11 @@ response = requests.get("https://apis.marketnews.com/api/select/calendar/events?
 
 events = response.json()['content']
 
-for event in events:
-    for ia in event['instantAnswers']:
-        print("\ndisplay:   " + ia['display'] )
-        print("state:     " + ia['state'] )
-        print("date:      " + event['date'] )
-        for question in ia['questions']:
-            print(question)
-        print("-----\n" )
+for e in events:
+    for s in e['dataSeriesEntries']:
+        print(e['date'] + " - " + s['display'])
+
+
 
 
 # Connect to Websocket and wait for data
@@ -57,7 +54,8 @@ ws.send(Frame.marshall("CONNECT",{ 'passcode':token, 'heart-beat':'0,30000'},"")
 print()
 print(ws.recv())
 
-ws.send(Frame.marshall("SUBSCRIBE",{'destination':"/topic/instant-answers"},""))
+print("Subscribing to data events ----")
+ws.send(Frame.marshall("SUBSCRIBE",{'destination':"/topic/observations"},""))
 
 print("Starting listener loop ----")
 
